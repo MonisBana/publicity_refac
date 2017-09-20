@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,10 +37,7 @@ import models.User;
 import vinay.com.publicity.R;
 
 public class AddFormFragment extends Fragment {
-
-
     Firebase userRef;
-
     Firebase eventRef;
     Firebase entriesRef;
 
@@ -62,16 +60,13 @@ public class AddFormFragment extends Fragment {
     String key;
     String UserKey;
     public AddFormFragment() {
-        // Required empty public constructor
         userRef=new Firebase(SharedResources.USER);
 
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_add_form, container, false);
     }
 
@@ -79,8 +74,7 @@ public class AddFormFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if(receiptId==null || eventName==null){
-            android.support.v4.app.FragmentTransaction transaction =
-                    getActivity().getSupportFragmentManager().beginTransaction();
+            android.support.v4.app.FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             AddFragment addFragment = new AddFragment();
             transaction.replace(R.id.fragment_container, addFragment);
             transaction.commit();
@@ -95,6 +89,7 @@ public class AddFormFragment extends Fragment {
         balance= (TextView) getActivity().findViewById(R.id.tvBalance);
         chkMember=(CheckBox)getActivity().findViewById(R.id.chkMember);
         balance.setText(""+totalCost);
+
         eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,7 +105,7 @@ public class AddFormFragment extends Fragment {
             }
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
+                Log.e("Dhanesh",firebaseError.getMessage());
             }
         });
 
@@ -118,8 +113,7 @@ public class AddFormFragment extends Fragment {
             @Override
             public void onClick(View v) {
                if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(),
-                        Manifest.permission.SEND_SMS)
-                        == PackageManager.PERMISSION_GRANTED && validate()) {
+                        Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED && validate()) {
                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                    String time = sdf.format(new Date());
                    Entry entry = new Entry(
@@ -152,7 +146,7 @@ public class AddFormFragment extends Fragment {
                    smsManager.sendTextMessage(phoneNO, null, textmsg, null, null);
                    Toast.makeText(getActivity(), "Msg sent to participant!", Toast.LENGTH_SHORT).show();
                    //SEND TO Admin
-                   textmsg+="Client Mob Number:-"+phoneNO;
+                   textmsg+="\nClient Mob Number:-"+phoneNO;
                    smsManager.sendTextMessage(SharedResources.ADMINNO, null, textmsg, null, null);
                    Toast.makeText(getActivity(), "Msg sent to Admin", Toast.LENGTH_SHORT).show();
 
@@ -172,12 +166,9 @@ public class AddFormFragment extends Fragment {
 
                    eventRef.child(key).setValue(event);
                    //sharedPrefeernce update
-                   final SharedPreferences sp = getActivity().getSharedPreferences(
-                           SharedResources.SharedUSERDATA,
-                           Context.MODE_PRIVATE);
+                   final SharedPreferences sp = getActivity().getSharedPreferences(SharedResources.SharedUSERDATA, Context.MODE_PRIVATE);
                    SharedPreferences.Editor editor = sp.edit();
-                   editor.putInt(SharedResources.SharedENTRIES,
-                           sp.getInt(SharedResources.SharedENTRIES, -99) + 1);
+                   editor.putInt(SharedResources.SharedENTRIES, sp.getInt(SharedResources.SharedENTRIES, -99) + 1);
                    editor.apply();
                    //user data update
                    userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -236,7 +227,6 @@ public class AddFormFragment extends Fragment {
         });
 
         chkMember.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 if (((CheckBox) v).isChecked()) {
@@ -259,8 +249,15 @@ public class AddFormFragment extends Fragment {
             }
         });
     }
-    private void clear()
-    {
+    public void setEvent(String eventName,String receiptId,int cost){
+        this.eventName=eventName;
+        this.receiptId=receiptId;
+        entriesRef=new Firebase(SharedResources.ENTRIES);
+        eventRef=new Firebase(SharedResources.EVENT);
+        totalCost=cost;
+    }
+
+    private void clear() {
         Toast.makeText(getActivity(),"Data Submitted successfully",Toast.LENGTH_SHORT).show();
         name.setText("");
         mobile.setText("");
@@ -270,13 +267,7 @@ public class AddFormFragment extends Fragment {
         payment.setText("");
         chkMember.setChecked(false);
     }
-    public void setEvent(String eventName,String receiptId,int cost){
-        this.eventName=eventName;
-        this.receiptId=receiptId;
-        entriesRef=new Firebase(SharedResources.ENTRIES);
-        eventRef=new Firebase(SharedResources.EVENT);
-        totalCost=cost;
-    }
+
     //------------------------------validation
     private boolean validate(){
         boolean flag=true;
@@ -323,7 +314,7 @@ public class AddFormFragment extends Fragment {
         return email.contains("@");
     }
 
-    //=====================================================================================================
+    //===============================================
     private class InputFilterMinMax implements InputFilter {
 
         private int min, max;

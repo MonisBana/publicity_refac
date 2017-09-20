@@ -50,11 +50,11 @@ public class Login extends AppCompatActivity {
         SharedPreferences sp=getSharedPreferences(
                 SharedResources.SharedUSERDATA,
                 Context.MODE_PRIVATE);
-        if(true
-                /*
+        if(
+
                 (!(sp.getString(SharedResources.SharedInital,"null").equals("null")))&&
                         (!(sp.getString(SharedResources.SharedNAME,"null").equals("null")))&&
-                        (sp.getInt(SharedResources.SharedENTRIES,-99)!=-99)*/
+                        (sp.getInt(SharedResources.SharedENTRIES,-99)!=-99)
                 ){
             Intent intent=new Intent(getApplicationContext(),MainActivity.class);
             startActivity(intent);
@@ -84,7 +84,6 @@ public class Login extends AppCompatActivity {
             focusView = email;
             cancel = true;
         }
-
         if (cancel) {
             focusView.requestFocus();
         } else {
@@ -92,8 +91,7 @@ public class Login extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     boolean isFound=false;
-                    final String android_id = Settings.Secure.getString(getBaseContext()
-                            .getContentResolver(), Settings.Secure.ANDROID_ID);
+                    final String android_id = Settings.Secure.getString(getBaseContext().getContentResolver(), Settings.Secure.ANDROID_ID);
                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                         User user=ds.getValue(User.class);
                         if(emailStr.equals(user.getEmail())&&passwordStr.equals(user.getPassword())){
@@ -110,8 +108,7 @@ public class Login extends AppCompatActivity {
                                 isFound=false;
                                 break;
                             }
-                            SharedPreferences sharedPreferences=getSharedPreferences(
-                                    SharedResources.SharedUSERDATA,
+                            SharedPreferences sharedPreferences=getSharedPreferences(SharedResources.SharedUSERDATA,
                                     Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor=sharedPreferences.edit();
                             editor.putString(SharedResources.SharedNAME,user.getMember_name());
@@ -131,7 +128,7 @@ public class Login extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
-
+                    Log.e("Dhanesh",firebaseError.getMessage());
                 }
             });
         }

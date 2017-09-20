@@ -5,11 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-/**
- * Created by Nitu on 1/2/2016.
- */
 public class EventDatabaseOperations extends SQLiteOpenHelper {
 
     public static final int database_version=1;
@@ -38,7 +33,7 @@ public class EventDatabaseOperations extends SQLiteOpenHelper {
         ContentValues cv=new ContentValues();
         cv.put(EventTable.TableInfo.NAME,name);
         cv.put(EventTable.TableInfo.COST,cost);
-        long k=SQ.insert(EventTable.TableInfo.TABLE_NAME,null,cv);
+        SQ.insert(EventTable.TableInfo.TABLE_NAME,null,cv);
 
     }
 
@@ -46,8 +41,7 @@ public class EventDatabaseOperations extends SQLiteOpenHelper {
     {
         SQLiteDatabase SQ=dop.getWritableDatabase();
         String []columns={EventTable.TableInfo.NAME,EventTable.TableInfo.COST};
-        Cursor CR=SQ.query(EventTable.TableInfo.TABLE_NAME,columns,null,null,null,null,null);
-        return CR;
+        return SQ.query(EventTable.TableInfo.TABLE_NAME,columns,null,null,null,null,null);
     }
     public void clearAll(){
         SQLiteDatabase db = this.getWritableDatabase();

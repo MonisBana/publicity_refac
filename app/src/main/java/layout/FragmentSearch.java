@@ -28,16 +28,10 @@ import java.util.Locale;
 import models.Entry;
 import models.Event;
 import vinay.com.publicity.R;
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class FragmentSearch extends Fragment {
 
     Firebase entriesRef;
     Firebase costDBRef;
-
-
 
     EditText receiptId;
     Button btnSearch;
@@ -60,15 +54,12 @@ public class FragmentSearch extends Fragment {
     String key;
     String keyEvent;
     public FragmentSearch() {
-        // Required empty public constructor
         entriesRef=new Firebase(SharedResources.ENTRIES);
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
